@@ -1,0 +1,14 @@
+version: "3.3"
+
+services: 
+  solarprovider:
+    image: "node:20-alpine"
+    container_name: "solarprovider"
+    user: "root"
+    working_dir: /home/node/app
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    volumes:
+      - "./:/home/node/app"
+      - "./logs:/root/.npm/_logs"
