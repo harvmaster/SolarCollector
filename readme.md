@@ -2,7 +2,7 @@
 Simple test to read the realtime data of Victron CCGX Device
 
 ## Example
-An example of a frontend can be found [here](https://api.solar.mc.hzuccon.com/#/demo)<br />
+An example of a frontend can be found [here](https://www.solar.mc.hzuccon.com/#/demo)<br />
 This site logs directly from my solar power system
 
 # Config 
