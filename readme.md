@@ -9,7 +9,9 @@ const config = {
     port: 1883 // This may need to change, but i found this port to work
   },
   socketio: {
-    url: 'URL to socket.io server'
+    url: 'URL to socket.io server',
+    channelId: 'Channel you want to publish your solar data to on the api',
+    password: 'Password for authenticating with api'
   }
 }
 
