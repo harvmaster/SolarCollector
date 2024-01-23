@@ -8,10 +8,6 @@ class SolarDataCollector {
   #mqtt?: MqttClient
   #id?: string
 
-  constructor () {
-
-  }
-
   async init() {
     this.#socket = await this.connectSocket()
     this.#mqtt = await this.connectMqtt()
@@ -26,23 +22,31 @@ class SolarDataCollector {
         socket.emit('join', {
           clientType: 'provider',
           data: {
-            providerId: Math.floor(Math.random() * 10000000)
+            channelId: config.socketio.channelId,
+            password: config.socketio.password
           }
         })
-        resolve(socket)
+        socket.on('joined', () => {
+          console.log(`joined channel: ${config.socketio.channelId}`)
+          resolve(socket)
+        })
       })
       socket.on('connect_error', (err) => {
         console.log('error connecting to socket.io', err)
         reject(err)
+      })
+      socket.on('error', (err) => {
+        console.log(err)
       })
     })
   }
 
   connectMqtt (): Promise<MqttClient> {
     return new Promise((resolve, reject) => {
+      console.log('Connecting to MQTT server at ' + config.vrm.ip + ':' + config.vrm.port + '...')
       const client = MQTT.connect(`mqtt://${config.vrm.ip}:${config.vrm.port}`)
       client.on('connect', () => {
-        console.log('connected')
+        console.log('MQTT connected')
         client.subscribe('#', (err) => {
           if (err) {
             console.log('error subscribing', err)
@@ -107,9 +111,7 @@ class SolarDataCollector {
       const msg = JSON.parse(message)
       const value = msg.value
 
-      if (topics[device] && topics[device][deviceTopic]) {
-        topics[device][deviceTopic](value)
-      }
+      topics[device]?.[deviceTopic]?.(value);
     })
   }
 }
