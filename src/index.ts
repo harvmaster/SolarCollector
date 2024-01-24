@@ -37,6 +37,16 @@ class SolarDataCollector {
       })
       socket.on('error', (err) => {
         console.log(err)
+        if (err.error === 'No channel found') {
+          console.log('No channel found, creating...')
+          socket.emit('join', {
+            clientType: 'provider',
+            data: {
+              channelId: config.socketio.channelId,
+              password: config.socketio.password,
+            }
+          })
+        }
       })
     })
   }
@@ -93,11 +103,14 @@ class SolarDataCollector {
       // i.e. N/123456789/system/0/Dc/Vebus/Power
       if (!topic.startsWith(`N/${this.#id}/system/0/Dc`)) return
 
+      console.log(topic, message)
+
       const topics: {[key: string]: { [key: string]: (val: number) => void }} = {
         'Vebus': {
           'Power': (val) => this.#socket?.emit('update', { consumption: val })
         },
         'Battery': {
+          'Voltage': (val) => this.#socket?.emit('update', { batteryVoltage: val }),
           'Soc': (val) => this.#socket?.emit('update', { battery: val })
         },
         'Pv': {
