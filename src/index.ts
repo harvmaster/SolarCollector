@@ -23,7 +23,7 @@ class SolarDataCollector {
           clientType: 'provider',
           data: {
             channelId: config.socketio.channelId,
-            password: config.socketio.password
+            password: config.socketio.password,
           }
         })
         socket.on('joined', () => {

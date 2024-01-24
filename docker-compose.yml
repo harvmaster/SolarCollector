@@ -12,3 +12,4 @@ services:
     volumes:
       - "./:/home/node/app"
       - "./logs:/root/.npm/_logs"
+    command: "sh -c 'cd /home/node/app && npm run start'"
