@@ -75,6 +75,15 @@ class SolarDataCollector {
           this.keepAlive()
         }
       })
+
+      client.on('error', (err) => {
+        console.log('error connecting to MQTT', err)
+        reject(err)
+      })
+
+      client.on('disconnect', () => {
+        console.log(`[${new Date().toLocaleString()}]  MQTT disconnected`)
+      })
     })
   }
 
@@ -101,9 +110,11 @@ class SolarDataCollector {
       // topics we want
       // N/$id/system/0/Dc/:device/:value
       // i.e. N/123456789/system/0/Dc/Vebus/Power
+      if (topic.includes('Battery/Soc')) console.log(`[${new Date().toLocaleString()}]  ${topic}: ${message}  (This is the battery soc)`)
+
       if (!topic.startsWith(`N/${this.#id}/system/0/Dc`)) return
 
-      console.log(topic, message)
+      if (config.settings.debug) console.log(`[${new Date().toLocaleString()}]  ${topic}: ${message}`)
 
       const topics: {[key: string]: { [key: string]: (val: number) => void }} = {
         'Vebus': {
